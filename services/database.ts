@@ -15,6 +15,21 @@ export const setupDatabase = () => {
         takenAt TEXT NOT NULL
       );
     `);
+    db.execSync(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        email TEXT NOT NULL
+      );
+    `);
+
+    const existingUser = db.getAllSync<{ id: number }>('SELECT id FROM users LIMIT 1');
+    if (existingUser.length === 0) {
+      db.runSync('INSERT INTO users (username, email) VALUES (?, ?)', [
+        'Utilisateur',
+        'user@example.com',
+      ]);
+    }
   }
 };
 
@@ -37,5 +52,30 @@ export const photoDatabase = {
   getPhotosByDate: (date: string) => {
     if (!db) return [];
     return db.getAllSync<any>('SELECT * FROM photos WHERE takenAt = ?', [date]);
-  }
+  },
+  getPhotoCountsByDate: () => {
+    if (!db) return [];
+    return db.getAllSync<{ takenAt: string; count: number }>(
+      'SELECT takenAt, COUNT(*) as count FROM photos GROUP BY takenAt ORDER BY takenAt DESC'
+    );
+  },
+  getAllPhotos: () => {
+    if (!db) return [];
+    return db.getAllSync<any>('SELECT * FROM photos');
+  },
+};
+
+export const userDatabase = {
+  getUser: () => {
+    if (!db) return null;
+    const rows = db.getAllSync<any>('SELECT * FROM users LIMIT 1');
+    return rows[0] ?? null;
+  },
+  updateUser: (id: number, username: string, email: string) => {
+    return db?.runSync('UPDATE users SET username = ?, email = ? WHERE id = ?', [
+      username,
+      email,
+      id,
+    ]);
+  },
 };
