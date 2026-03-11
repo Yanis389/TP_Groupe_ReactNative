@@ -1,4 +1,4 @@
-import Map from '@/screens/MapScreen';
+import Map from '@/components/MapComponent';
 import { StyleSheet, View } from 'react-native';
 
 export default function MapScreen() {

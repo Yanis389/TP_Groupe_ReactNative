@@ -20,7 +20,7 @@ export default function useCurrentLocation() {
         'Oops, this will not work on Snack in an Android Emulator. Try it on your device!'
       );
       setLoading(false);
-      return;
+      return null;
     }
 
     const { status } = await requestForegroundPermissionsAsync();
@@ -28,12 +28,13 @@ export default function useCurrentLocation() {
     if (status !== 'granted') {
       setErrorMsg('Permission to access location was denied');
       setLoading(false);
-      return;
+      return null;
     }
 
     const current = await getCurrentPositionAsync({});
     setLocation(current);
     setLoading(false);
+    return current;
   }, []);
 
   useEffect(() => {
