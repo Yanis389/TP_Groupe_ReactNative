@@ -1,12 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Map from '@/screens/MapScreen';
+import { StyleSheet, View } from 'react-native';
 
 export default function MapScreen() {
   return (
     <View style={styles.container}>
-      <Ionicons name="map" size={80} color="#007AFF" />
+      <Map />
+      {/* <Ionicons name="map" size={80} color="#007AFF" />
       <Text style={styles.title}>Carte</Text>
-      <Text style={styles.subtitle}>Écran de la carte</Text>
+      <Text style={styles.subtitle}>Écran de la carte</Text> */}
     </View>
   );
 }
@@ -14,8 +15,6 @@ export default function MapScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
   },
   title: {
