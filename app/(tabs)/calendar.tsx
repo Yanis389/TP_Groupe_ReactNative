@@ -61,7 +61,7 @@ export default function CalendarScreen() {
           renderItem={({ item }) => (
             <TouchableOpacity 
               style={styles.card} 
-              onPress={() => router.push({ pathname: "/photo-detail", params: { id: item.id } })}
+              onPress={() => console.log(item)}
             >
               <Image source={{ uri: item.uri }} style={styles.img} />
               <View>
