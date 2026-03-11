@@ -18,15 +18,15 @@ export default function PhotosScreen() {
     }, [])
   );
 
-  const filtered = useMemo(() => 
-    allPhotos.filter(p => p.takenAt.includes(search)), 
-  [allPhotos, search]);
+  const filtered = useMemo(() =>
+    allPhotos.filter(p => p.takenAt.includes(search)),
+    [allPhotos, search]);
 
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <TextInput 
-          placeholder="Rechercher une date (AAAA-MM-DD)" 
+        <TextInput
+          placeholder="Rechercher une date (AAAA-MM-DD)"
           style={styles.input}
           onChangeText={setSearch}
           placeholderTextColor="#8E8E93"
@@ -38,14 +38,16 @@ export default function PhotosScreen() {
         numColumns={3}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity 
+          <TouchableOpacity
             activeOpacity={0.8}
             style={styles.gridItem}
-            onPress={() => router.push({ pathname: '/photo-detail', params: { id: item.id } })}
+            onPress={() => {
+              router.push({ pathname: '/photo_detail', params: { uri: item.uri } });
+            }}
           >
             <Image source={{ uri: item.uri }} style={styles.image} />
             <View style={styles.overlay}>
-               <Text style={styles.dateLabel}>{item.takenAt}</Text>
+              <Text style={styles.dateLabel}>{item.takenAt}</Text>
             </View>
           </TouchableOpacity>
         )}

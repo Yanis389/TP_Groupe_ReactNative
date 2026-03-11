@@ -25,10 +25,10 @@ export default function CalendarScreen() {
 
   const calendarMarks = useMemo(() => ({
     ...marks,
-    [selected]: { 
-      ...(marks[selected] || {}), 
-      selected: true, 
-      selectedColor: '#007AFF' 
+    [selected]: {
+      ...(marks[selected] || {}),
+      selected: true,
+      selectedColor: '#007AFF'
     }
   }), [marks, selected]);
 
@@ -42,14 +42,14 @@ export default function CalendarScreen() {
         <Text style={styles.sectionTitle}>
           {photos.length > 0 ? `Photos du ${selected}` : "Aucun souvenir ce jour"}
         </Text>
-        
+
         <FlatList
           data={photos}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <PhotoCard 
-              item={item} 
-              onPress={(p) => router.push({ pathname: '/photo-detail', params: { id: p.id } })} 
+            <PhotoCard
+              item={item}
+              onPress={() => router.push({ pathname: '/photo_detail', params: { uri: item.uri } })}
             />
           )}
           contentContainerStyle={{ paddingBottom: 20 }}
