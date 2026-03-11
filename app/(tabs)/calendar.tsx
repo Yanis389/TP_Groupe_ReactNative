@@ -12,7 +12,7 @@ export default function CalendarScreen() {
   const router = useRouter();
 
   useEffect(() => {
-    // Synchronisation avec la DB (Consigne 52, 63)
+    // Synchronisation avec la DB 
     setMarks(photoDatabase.getMarkedDates());
     setPhotos(photoDatabase.getPhotosByDate(selected));
   }, [selected]);
