@@ -23,10 +23,12 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
   const router = useRouter();
   const { location, refresh, loading } = useCurrentLocation();
   const [mapReady, setMapReady] = useState(false);
+  const hasFitRef = useRef(false);
 
   useFocusEffect(
     useCallback(() => {
       setupDatabase();
+      hasFitRef.current = false;
       const stored = photoDatabase.getAllPhotos();
       if (stored.length === 0) {
         setPhotoMarkers(markers);
@@ -49,7 +51,7 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
         }))
         .filter(c => Number.isFinite(c.latitude) && Number.isFinite(c.longitude));
 
-      if (coords.length === 0) return;
+      if (coords.length === 0) return false;
       if (coords.length === 1) {
         const only = coords[0];
         mapRef.current?.animateToRegion(
@@ -61,19 +63,28 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
           },
           500
         );
-        return;
+        return true;
       }
       mapRef.current?.fitToCoordinates(coords, {
         edgePadding: { top: 80, right: 40, bottom: 80, left: 40 },
         animated: true,
       });
+      return true;
     },
     [region.latitudeDelta, region.longitudeDelta]
   );
 
   useEffect(() => {
     if (!mapReady) return;
-    fitToMarkers(photoMarkers);
+    if (hasFitRef.current) return;
+    if (photoMarkers.length === 0) return;
+
+    const id = setTimeout(() => {
+      const didFit = fitToMarkers(photoMarkers);
+      if (didFit) hasFitRef.current = true;
+    }, 0);
+
+    return () => clearTimeout(id);
   }, [fitToMarkers, mapReady, photoMarkers]);
 
   const recenterToLocation = async () => {
@@ -97,8 +108,7 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
       <MapView
         ref={mapRef}
         style={styles.map}
-        region={region}
-        onRegionChangeComplete={setRegion}
+        initialRegion={region}
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         onMapReady={() => setMapReady(true)}
       >
