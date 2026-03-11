@@ -1,4 +1,4 @@
-import { MapScreenProps } from '@/services/types';
+﻿import { MapScreenProps } from '@/services/map';
 import useCurrentLocation from '@/utils/location';
 import React, { useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
