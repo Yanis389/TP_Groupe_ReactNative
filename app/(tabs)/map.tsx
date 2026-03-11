@@ -1,5 +1,5 @@
 import Map from '@/components/MapComponent';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 export default function MapScreen() {
   return (
@@ -12,3 +12,19 @@ export default function MapScreen() {
   );
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 20,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 10,
+  },
+});
