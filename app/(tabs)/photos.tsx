@@ -18,22 +18,18 @@ export default function PhotosScreen() {
   const [maxDistance, setMaxDistance] = useState<string>('');
   const [isAscending, setIsAscending] = useState(false);
   
-  // États pour la pagination
   const [displayedPhotos, setDisplayedPhotos] = useState<any[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
 
   const router = useRouter();
 
-  // 1. Chargement de la source brute
   useFocusEffect(
     useCallback(() => {
       setAllPhotos(photoDatabase.getAllPhotos());
     }, [])
   );
 
-  // 2. FILTRAGE ET TRI GLOBAL (S'applique sur TOUTES les photos)
   const filteredAndSortedPhotos = useMemo(() => {
-    // On filtre d'abord TOUTE la base
     let result = allPhotos.filter(p => {
       const matchSearch = p.takenAt.includes(search) || 
                           (p.locationName?.toLowerCase().includes(search.toLowerCase()));
@@ -41,7 +37,6 @@ export default function PhotosScreen() {
       return matchSearch && matchDistance;
     });
 
-    // On trie TOUTE la base filtrée
     return result.sort((a, b) => {
       const dateA = new Date(a.takenAt).getTime();
       const dateB = new Date(b.takenAt).getTime();
@@ -49,20 +44,16 @@ export default function PhotosScreen() {
     });
   }, [allPhotos, search, maxDistance, isAscending]);
 
-  // 3. RÉINITIALISATION DE LA VUE (Dès que le tri ou le filtre change)
   useEffect(() => {
-    // Quand on change le tri, on revient à la première page de la nouvelle liste triée
     setDisplayedPhotos(filteredAndSortedPhotos.slice(0, PAGE_SIZE));
   }, [filteredAndSortedPhotos]);
 
-  // 4. INFINITE SCROLL (Ajoute les éléments suivants de la liste déjà triée)
   const handleLoadMore = () => {
     if (displayedPhotos.length >= filteredAndSortedPhotos.length || loadingMore) return;
 
     setLoadingMore(true);
     setTimeout(() => {
       const nextIndex = displayedPhotos.length;
-      // On prend les 12 suivants dans la liste globale déjà triée/filtrée
       const nextBatch = filteredAndSortedPhotos.slice(nextIndex, nextIndex + PAGE_SIZE);
       
       setDisplayedPhotos(prev => [...prev, ...nextBatch]);
@@ -105,7 +96,7 @@ export default function PhotosScreen() {
       <FlatList
         data={displayedPhotos}
         numColumns={3}
-        keyExtractor={(item, index) => item.id.toString() + index} // Index ajouté pour éviter les clés dupliquées pendant le tri
+        keyExtractor={(item, index) => item.id.toString() + index} 
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={loadingMore ? <ActivityIndicator style={{ margin: 20 }} color="#007AFF" /> : null}
@@ -113,7 +104,7 @@ export default function PhotosScreen() {
           <TouchableOpacity
             activeOpacity={0.8}
             style={styles.gridItem}
-            onPress={() => router.push({ pathname: '/photo_detail', params: { uri: item.uri } })}
+            onPress={() => router.push({ pathname: '/photo_detail', params: { uri: item.uri, latitude: item.latitude, longitude: item.longitude, takenAt: item.takenAt } })}
           >
             <Image source={{ uri: item.uri }} style={styles.image} />
             <View style={styles.overlay}>
