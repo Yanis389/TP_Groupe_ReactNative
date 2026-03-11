@@ -13,6 +13,7 @@ export default function CameraScreen() {
   const [showCamera, setShowCamera] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState<Photo | null>(null);
   const [cameraRef, setCameraRef] = useState<any>(null);
+  const [facing, setFacing] = useState<'back' | 'front'>('back');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -124,10 +125,13 @@ export default function CameraScreen() {
   if (showCamera) {
     return (
       <View style={styles.cameraContainer}>
-        <CameraView style={styles.camera} ref={setCameraRef} facing="back">
+        <CameraView style={styles.camera} ref={setCameraRef} facing={facing}>
           <View style={styles.cameraControls}>
             <TouchableOpacity style={styles.captureButton} onPress={takePicture}>
               <View style={styles.captureButtonInner} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.flipButton} onPress={() => setFacing(facing === 'back' ? 'front' : 'back')}>
+              <Ionicons name="camera-reverse" size={32} color="#fff" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={() => setShowCamera(false)}>
               <Ionicons name="close" size={32} color="#fff" />
@@ -259,6 +263,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     right: 20,
+  },
+  flipButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
   },
   previewContainer: {
     marginTop: 20,
