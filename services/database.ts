@@ -77,12 +77,5 @@ export const userDatabase = {
       id,
     ]);
   },
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 };
-=======
-};
->>>>>>> 4a2419ca (Modification service databases pour intéreger utilisateur et d'autre methode pour la recupération de photo)
-=======
-};
->>>>>>> b6f67136 (fix: synchronisation database et correction définitive des imports caméra/calendrier)
