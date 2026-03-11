@@ -49,7 +49,7 @@ export default function CalendarScreen() {
           renderItem={({ item }) => (
             <PhotoCard 
               item={item} 
-              onPress={(p) => router.push({ pathname: '/photo-detail', params: { id: p.id } })} 
+              onPress={() => {}} 
             />
           )}
           contentContainerStyle={{ paddingBottom: 20 }}

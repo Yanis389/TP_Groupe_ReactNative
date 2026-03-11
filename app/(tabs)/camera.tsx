@@ -1,5 +1,5 @@
 import { photoDatabase, setupDatabase } from '@/services/database';
-import { Photo } from '@/services/types';
+import { Photo } from '@/services/photo';
 import useCurrentLocation from '@/utils/location';
 import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';

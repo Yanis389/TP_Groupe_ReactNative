@@ -41,7 +41,9 @@ export default function PhotosScreen() {
           <TouchableOpacity 
             activeOpacity={0.8}
             style={styles.gridItem}
-            onPress={() => router.push({ pathname: '/photo-detail', params: { id: item.id } })}
+            onPress={() => {
+              // TODO: Implement photo detail navigation
+            }}
           >
             <Image source={{ uri: item.uri }} style={styles.image} />
             <View style={styles.overlay}>
