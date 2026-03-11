@@ -5,6 +5,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 
+
 export default function Map({ markers = [], initialRegion }: MapScreenProps) {
   const fallbackRegion = useMemo(
     () => ({
@@ -18,6 +19,8 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
   const [region, setRegion] = useState(initialRegion ?? fallbackRegion);
   const mapRef = useRef<MapView>(null);
   const { location, refresh, loading } = useCurrentLocation();
+
+
   const recenterToLocation = async () => {
     const current = await refresh();
     const coords = current?.coords ?? location?.coords;
