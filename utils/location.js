@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 
 import { isDevice } from 'expo-device';
 
+
 import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from 'expo-location';
 
 // Hook exporte pour reutiliser la localisation ailleurs dans l'app

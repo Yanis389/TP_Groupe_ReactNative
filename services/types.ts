@@ -6,20 +6,14 @@ export interface Photo {
   takenAt: string; 
 }
 
-export type LatLng = { latitude: number; longitude: number };
+export interface MapRegion {
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
+}
 
-export type MarkerItem = {
-  latlng: LatLng;
-  title?: string;
-  description?: string;
-};
-
-export type MapScreenProps = {
-  markers?: MarkerItem[];
-  initialRegion?: {
-    latitude: number;
-    longitude: number;
-    latitudeDelta: number;
-    longitudeDelta: number;
-  };
-};
+export interface MapScreenProps {
+  markers?: Photo[];
+  initialRegion?: MapRegion;
+}
