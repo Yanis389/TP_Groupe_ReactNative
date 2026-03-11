@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Map from '@/components/MapComponent';
 import { StyleSheet, View } from 'react-native';
 
