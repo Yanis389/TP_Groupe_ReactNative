@@ -42,7 +42,7 @@ export default function PhotosScreen() {
             activeOpacity={0.8}
             style={styles.gridItem}
             onPress={() => {
-              router.push({ pathname: '/photo_detail', params: { uri: item.uri } });
+              router.push({ pathname: '/photo_detail', params: { uri: item.uri, latitude: item.latitude, longitude: item.longitude, takenAt: item.takenAt } });
             }}
           >
             <Image source={{ uri: item.uri }} style={styles.image} />
