@@ -1,4 +1,3 @@
-
 import { photoDatabase, setupDatabase } from '@/services/database';
 import { Photo } from '@/services/types';
 import useCurrentLocation from '@/utils/location';
