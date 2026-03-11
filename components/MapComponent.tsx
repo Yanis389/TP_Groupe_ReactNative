@@ -1,11 +1,11 @@
-import { photoDatabase, setupDatabase } from '@/services/database';
+﻿import { photoDatabase, setupDatabase } from '@/services/database';
 import { MapScreenProps } from '@/services/map';
 import useCurrentLocation from '@/utils/location';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Map({ markers = [], initialRegion }: MapScreenProps) {
   const fallbackRegion = useMemo(
@@ -110,7 +110,7 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
               longitude: Number(marker.longitude),
             }}
             onPress={() =>
-              router.push({ pathname: '/photo_detail', params: { uri: marker.uri } })
+              router.push({ pathname: '/photo_detail', params: { uri: marker.uri, longitude:marker.longitude, latitude:marker.latitude, takenAt:marker.takenAt } })
             }
           />
         ))}
