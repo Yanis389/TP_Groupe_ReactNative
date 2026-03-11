@@ -37,5 +37,9 @@ export const photoDatabase = {
   getPhotosByDate: (date: string) => {
     if (!db) return [];
     return db.getAllSync<any>('SELECT * FROM photos WHERE takenAt = ?', [date]);
+  },
+  getAllPhotos: () => {
+    if (!db) return [];
+    return db.getAllSync<any>('SELECT * FROM photos ORDER BY id DESC');
   }
 };
