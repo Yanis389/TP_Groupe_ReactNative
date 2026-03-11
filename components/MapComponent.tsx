@@ -1,10 +1,10 @@
-﻿import { MapScreenProps } from '@/services/map';
+import { photoDatabase, setupDatabase } from '@/services/database';
+import { MapScreenProps } from '@/services/map';
 import useCurrentLocation from '@/utils/location';
-import React, { useMemo, useRef, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-
-
 
 export default function Map({ markers = [], initialRegion }: MapScreenProps) {
   const fallbackRegion = useMemo(
@@ -17,9 +17,26 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
     []
   );
   const [region, setRegion] = useState(initialRegion ?? fallbackRegion);
+  const [photoMarkers, setPhotoMarkers] = useState(markers);
   const mapRef = useRef<MapView>(null);
+  const router = useRouter();
   const { location, refresh, loading } = useCurrentLocation();
 
+  useFocusEffect(
+    useCallback(() => {
+      setupDatabase();
+      const stored = photoDatabase.getAllPhotos();
+      if (stored.length === 0) {
+        setPhotoMarkers(markers);
+        return;
+      }
+      const merged = [...markers, ...stored].reduce((acc, item) => {
+        if (!acc.some(existing => existing.id === item.id)) acc.push(item);
+        return acc;
+      }, [] as typeof markers);
+      setPhotoMarkers(merged);
+    }, [markers])
+  );
 
   const recenterToLocation = async () => {
     const current = await refresh();
@@ -46,13 +63,16 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
         onRegionChangeComplete={setRegion}
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
       >
-        {markers.map((marker) => (
+        {photoMarkers.map((marker) => (
           <Marker
             key={`${marker.id}`}
             coordinate={{
-              latitude: marker.latitude,
-              longitude: marker.longitude,
+              latitude: Number(marker.latitude),
+              longitude: Number(marker.longitude),
             }}
+            onPress={() =>
+              router.push({ pathname: '/photo-detail', params: { id: marker.id } })
+            }
           />
         ))}
       </MapView>
@@ -62,7 +82,7 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
         disabled={loading}
       >
         <Text style={styles.recenterButtonText}>
-          {loading ? 'Localisation…' : 'Recentrer'}
+          {loading ? 'Localisation�' : 'Recentrer'}
         </Text>
       </Pressable>
     </View>
