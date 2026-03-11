@@ -2,8 +2,9 @@ import { photoDatabase, setupDatabase } from '@/services/database';
 import { MapScreenProps } from '@/services/map';
 import useCurrentLocation from '@/utils/location';
 import { useFocusEffect, useRouter } from 'expo-router';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Platform, Pressable, StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 export default function Map({ markers = [], initialRegion }: MapScreenProps) {
@@ -21,6 +22,7 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
   const mapRef = useRef<MapView>(null);
   const router = useRouter();
   const { location, refresh, loading } = useCurrentLocation();
+  const [mapReady, setMapReady] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -37,6 +39,42 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
       setPhotoMarkers(merged);
     }, [markers])
   );
+
+  const fitToMarkers = useCallback(
+    (items: typeof markers) => {
+      const coords = items
+        .map(item => ({
+          latitude: Number(item.latitude),
+          longitude: Number(item.longitude),
+        }))
+        .filter(c => Number.isFinite(c.latitude) && Number.isFinite(c.longitude));
+
+      if (coords.length === 0) return;
+      if (coords.length === 1) {
+        const only = coords[0];
+        mapRef.current?.animateToRegion(
+          {
+            latitude: only.latitude,
+            longitude: only.longitude,
+            latitudeDelta: region.latitudeDelta,
+            longitudeDelta: region.longitudeDelta,
+          },
+          500
+        );
+        return;
+      }
+      mapRef.current?.fitToCoordinates(coords, {
+        edgePadding: { top: 80, right: 40, bottom: 80, left: 40 },
+        animated: true,
+      });
+    },
+    [region.latitudeDelta, region.longitudeDelta]
+  );
+
+  useEffect(() => {
+    if (!mapReady) return;
+    fitToMarkers(photoMarkers);
+  }, [fitToMarkers, mapReady, photoMarkers]);
 
   const recenterToLocation = async () => {
     const current = await refresh();
@@ -55,13 +93,14 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <MapView
         ref={mapRef}
         style={styles.map}
         region={region}
         onRegionChangeComplete={setRegion}
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+        onMapReady={() => setMapReady(true)}
       >
         {photoMarkers.map((marker) => (
           <Marker
@@ -71,7 +110,7 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
               longitude: Number(marker.longitude),
             }}
             onPress={() =>
-              router.push({ pathname: '/photo-detail', params: { id: marker.id } })
+              router.push({ pathname: '/photo_detail', params: { uri: marker.uri } })
             }
           />
         ))}
@@ -82,10 +121,10 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
         disabled={loading}
       >
         <Text style={styles.recenterButtonText}>
-          {loading ? 'Localisation…' : 'Recentrer'}
+          {loading ? 'Localisation' : 'Recentrer'}
         </Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -94,8 +133,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
   },
   recenterButton: {
     position: 'absolute',
