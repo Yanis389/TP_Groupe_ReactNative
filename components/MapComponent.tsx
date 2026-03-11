@@ -5,7 +5,10 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a00c20c8 (Ajout bouton recentrer pour recenter la map sur la localisation actuelle)
 export default function Map({ markers = [], initialRegion }: MapScreenProps) {
   const fallbackRegion = useMemo(
     () => ({
@@ -20,7 +23,10 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
   const mapRef = useRef<MapView>(null);
   const { location, refresh, loading } = useCurrentLocation();
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a00c20c8 (Ajout bouton recentrer pour recenter la map sur la localisation actuelle)
   const recenterToLocation = async () => {
     const current = await refresh();
     const coords = current?.coords ?? location?.coords;
@@ -46,6 +52,7 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
         onRegionChangeComplete={setRegion}
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
       >
+<<<<<<< HEAD
         {markers.map((marker) => (
           <Marker
             key={`${marker.id}`}
@@ -53,6 +60,14 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
               latitude: marker.latitude,
               longitude: marker.longitude,
             }}
+=======
+        {markers.map((marker, index) => (
+          <Marker
+            key={`${marker.latlng.latitude}-${marker.latlng.longitude}-${index}`}
+            coordinate={marker.latlng}
+            title={marker.title}
+            description={marker.description}
+>>>>>>> a00c20c8 (Ajout bouton recentrer pour recenter la map sur la localisation actuelle)
           />
         ))}
       </MapView>
@@ -94,4 +109,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> a00c20c8 (Ajout bouton recentrer pour recenter la map sur la localisation actuelle)
