@@ -1,14 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { photoDatabase } from '../../services/database';
-import { Photo } from '../../services/photo';
 
 export default function PhotoDetail() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const [photo, setPhoto] = useState<Photo | null>(null);
+  const [photo, setPhoto] = useState<any | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -23,16 +22,18 @@ export default function PhotoDetail() {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.back} onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={24} color="#FFF" />
+        <Ionicons name="close-circle" size={40} color="#FFF" />
       </TouchableOpacity>
       
       <Image source={{ uri: photo.uri }} style={styles.fullImage} resizeMode="contain" />
       
-      <View style={styles.infoBox}>
+      <SafeAreaView style={styles.infoBox}>
         <Text style={styles.title}>Souvenir du {photo.takenAt}</Text>
-        <Text style={styles.coords}>📍 Latitude: {photo.latitude.toFixed(4)}</Text>
-        <Text style={styles.coords}>📍 Longitude: {photo.longitude.toFixed(4)}</Text>
-      </View>
+        <View style={styles.row}>
+           <Text style={styles.coords}>📍 Lat: {Number(photo.latitude).toFixed(4)}</Text>
+           <Text style={styles.coords}>📍 Lon: {Number(photo.longitude).toFixed(4)}</Text>
+        </View>
+      </SafeAreaView>
     </View>
   );
 }
@@ -40,9 +41,10 @@ export default function PhotoDetail() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  back: { position: 'absolute', top: 50, left: 20, zIndex: 10, backgroundColor: 'rgba(0,0,0,0.5)', padding: 10, borderRadius: 25 },
+  back: { position: 'absolute', top: 50, right: 20, zIndex: 10 },
   fullImage: { flex: 1 },
   infoBox: { backgroundColor: '#FFF', padding: 25, borderTopLeftRadius: 30, borderTopRightRadius: 30 },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
-  coords: { fontSize: 16, color: '#666', marginBottom: 5 }
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 15 },
+  row: { flexDirection: 'row', justifyContent: 'space-between' },
+  coords: { fontSize: 14, color: '#666' }
 });

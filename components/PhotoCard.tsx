@@ -1,10 +1,9 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Photo } from '../services/photo';
 
 interface Props {
-  item: Photo;
-  onPress: (photo: Photo) => void;
+  item: any;
+  onPress: (photo: any) => void;
 }
 
 export const PhotoCard = ({ item, onPress }: Props) => {
@@ -24,7 +23,7 @@ export const PhotoCard = ({ item, onPress }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  card: { flexDirection: 'row', padding: 10, backgroundColor: '#fff', marginBottom: 8, borderRadius: 10 },
+  card: { flexDirection: 'row', padding: 10, backgroundColor: '#fff', marginBottom: 8, borderRadius: 10, alignItems: 'center' },
   img: { width: 60, height: 60, borderRadius: 5 },
   info: { marginLeft: 12, justifyContent: 'center' },
   cardText: { fontWeight: 'bold' },

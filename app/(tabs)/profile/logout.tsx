@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as Updates from 'expo-updates';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function LogoutScreen() {
   const router = useRouter();
