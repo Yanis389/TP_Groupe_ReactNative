@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Photo } from '../photo';
+import { Photo } from '../services/photo';
 
 interface Props {
   item: Photo;
