@@ -1,26 +1,10 @@
+import { MapScreenProps } from '@/services/types';
 import React, { useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { Platform, StyleSheet, View } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
-type LatLng = { latitude: number; longitude: number };
 
-type MarkerItem = {
-  latlng: LatLng;
-  title?: string;
-  description?: string;
-};
-
-type MapScreenProps = {
-  markers?: MarkerItem[];
-  initialRegion?: {
-    latitude: number;
-    longitude: number;
-    latitudeDelta: number;
-    longitudeDelta: number;
-  };
-};
-
-export default function MapScreen({ markers = [], initialRegion }: MapScreenProps) {
+export default function Map({ markers = [], initialRegion }: MapScreenProps) {
   const fallbackRegion = useMemo(
     () => ({
       latitude: 37.78825,
@@ -34,7 +18,12 @@ export default function MapScreen({ markers = [], initialRegion }: MapScreenProp
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} region={region} onRegionChange={setRegion}>
+      <MapView
+        style={styles.map}
+        region={region}
+        onRegionChangeComplete={setRegion}
+        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+      >
         {markers.map((marker, index) => (
           <Marker
             key={`${marker.latlng.latitude}-${marker.latlng.longitude}-${index}`}
