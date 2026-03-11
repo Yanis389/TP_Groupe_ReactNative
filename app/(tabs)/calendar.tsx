@@ -1,93 +1,84 @@
-import { useFocusEffect, useRouter } from 'expo-router';
-import React, { useCallback, useState } from 'react';
-import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useMemo, useState } from 'react';
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { CustomCalendar } from '../../components/CustomCalendar';
+import { PhotoCard } from '../../components/PhotoCard';
 import { photoDatabase } from '../../services/database';
 
 export default function CalendarScreen() {
+  const [selected, setSelected] = useState(new Date().toISOString().split('T')[0]);
+  const [photos, setPhotos] = useState<any[]>([]);
+  const [marks, setMarks] = useState<Record<string, any>>({});
   const router = useRouter();
-  const [markedDates, setMarkedDates] = useState({});
-  const [selectedPhotos, setSelectedPhotos] = useState<any[]>([]);
-  const [selectedDate, setSelectedDate] = useState('');
 
-  const loadData = useCallback(() => {
-    try {
-      const marks = photoDatabase.getMarkedDates();
-      setMarkedDates(marks);
-      if (selectedDate) {
-        const photos = photoDatabase.getPhotosByDate(selectedDate);
-        setSelectedPhotos(photos);
-      }
-    } catch (e) {
-      console.error("Erreur chargement SQLite:", e);
-    }
-  }, [selectedDate]);
+  useEffect(() => {
+    const refresh = () => {
+      setMarks(photoDatabase.getMarkedDates());
+      setPhotos(photoDatabase.getPhotosByDate(selected));
+    };
+    refresh();
+  }, [selected]);
 
-  useFocusEffect(
-    useCallback(() => {
-      loadData();
-    }, [loadData])
-  );
-
-  const injectTestData = () => {
-    const today = new Date().toISOString().split('T')[0];
-    photoDatabase.addPhoto("https://picsum.photos/200", 43.7, 7.2, today);
-    Alert.alert("Succès", "Photo de test ajoutée dans SQLite !");
-    loadData();
+  const onDayPress = (day: any) => {
+    setSelected(day.dateString);
   };
 
-  return (
-    <View style={styles.container}>
-      <CustomCalendar 
-        markedDates={markedDates} 
-        onDayPress={(day: any) => {
-          setSelectedDate(day.dateString);
-          const photos = photoDatabase.getPhotosByDate(day.dateString);
-          setSelectedPhotos(photos);
-        }} 
-      />
-      
-      <TouchableOpacity style={styles.testBtn} onPress={injectTestData}>
-        <Text style={{color: 'white', fontWeight: 'bold'}}>SIMULER UNE PHOTO (TEST)</Text>
-      </TouchableOpacity>
+  const calendarMarks = useMemo(() => ({
+    ...marks,
+    [selected]: { 
+      ...(marks[selected] || {}), 
+      selected: true, 
+      selectedColor: '#007AFF' 
+    }
+  }), [marks, selected]);
 
-      <View style={styles.listContainer}>
-        <Text style={styles.title}>
-          {selectedDate ? `Photos du ${selectedDate}` : "Sélectionnez une date"}
-        </Text>
-        <FlatList
-          data={selectedPhotos}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity 
-              style={styles.card} 
-              onPress={() => console.log(item)}
-            >
-              <Image source={{ uri: item.uri }} style={styles.img} />
-              <View>
-                <Text style={styles.cardText}>Photo #{item.id}</Text>
-                <Text style={styles.geoText}>Lat: {item.latitude.toFixed(2)} | Lon: {item.longitude.toFixed(2)}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          ListEmptyComponent={<Text style={styles.empty}>Aucune photo pour ce jour.</Text>}
-        />
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.calendarCard}>
+        <CustomCalendar onDayPress={onDayPress} markedDates={calendarMarks} />
       </View>
 
-
-    </View>
+      <View style={styles.listContainer}>
+        <Text style={styles.sectionTitle}>
+          {photos.length > 0 ? `Photos du ${selected}` : "Aucun souvenir ce jour"}
+        </Text>
+        
+        <FlatList
+          data={photos}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <PhotoCard 
+              item={item} 
+              onPress={(p) => router.push({ pathname: '/photo-detail', params: { id: p.id } })} 
+            />
+          )}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          ListEmptyComponent={
+            <View style={styles.emptyBox}>
+              <Text style={styles.emptyText}>🏜️ Voyagez pour remplir cette date !</Text>
+            </View>
+          }
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'white' },
-  testBtn: { backgroundColor: '#00adf5', padding: 12, margin: 15, borderRadius: 8, alignItems: 'center' },
-  listContainer: { flex: 1, paddingHorizontal: 15 },
-  title: { fontSize: 18, fontWeight: 'bold', marginBottom: 15 },
-  card: { flexDirection: 'row', alignItems: 'center', marginBottom: 12, padding: 10, backgroundColor: '#f8f9fa', borderRadius: 8 },
-  img: { width: 60, height: 60, borderRadius: 5, marginRight: 15 },
-  cardText: { fontWeight: 'bold', fontSize: 14 },
-  geoText: { fontSize: 12, color: '#666', marginTop: 4 },
-  empty: { textAlign: 'center', marginTop: 20, color: '#999' }
+  container: { flex: 1, backgroundColor: '#F2F2F7' },
+  calendarCard: {
+    backgroundColor: '#FFF',
+    margin: 10,
+    borderRadius: 20,
+    paddingBottom: 10,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+  },
+  listContainer: { flex: 1, paddingHorizontal: 15, marginTop: 10 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 15, color: '#1C1C1E' },
+  emptyBox: { marginTop: 40, alignItems: 'center' },
+  emptyText: { color: '#8E8E93', fontSize: 16 }
 });
-

@@ -1,7 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import { Platform } from 'react-native';
 
-// Sécurité pour éviter l'erreur .wasm sur Chrome
 const db = Platform.OS !== 'web' ? SQLite.openDatabaseSync('travel_journal.db') : null;
 
 export const setupDatabase = () => {
@@ -78,4 +77,12 @@ export const userDatabase = {
       id,
     ]);
   },
+<<<<<<< HEAD
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 4a2419ca (Modification service databases pour intéreger utilisateur et d'autre methode pour la recupération de photo)
+=======
+};
+>>>>>>> b6f67136 (fix: synchronisation database et correction définitive des imports caméra/calendrier)

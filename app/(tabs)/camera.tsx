@@ -3,9 +3,13 @@ import { Photo } from '@/services/types';
 import useCurrentLocation from '@/utils/location';
 import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { launchImageLibraryAsync } from 'expo-image-picker';
 import { useEffect, useState } from 'react';
 import { Alert, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { launchImageLibraryAsync } from 'expo-image-picker';
+<<<<<<< HEAD
+=======
+
+>>>>>>> b6f67136 (fix: synchronisation database et correction définitive des imports caméra/calendrier)
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
