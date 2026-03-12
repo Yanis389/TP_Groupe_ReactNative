@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { CustomCalendar } from '../../components/CustomCalendar';
+import { EditPhotoModal } from '../../components/EditPhotoModal';
 import { PhotoCard } from '../../components/PhotoCard';
 import { photoDatabase } from '../../services/database';
 
@@ -9,6 +10,8 @@ export default function CalendarScreen() {
   const [selected, setSelected] = useState(new Date().toISOString().split('T')[0]);
   const [photos, setPhotos] = useState<any[]>([]);
   const [marks, setMarks] = useState<Record<string, any>>({});
+  const [editingPhoto, setEditingPhoto] = useState<any>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -55,6 +58,28 @@ export default function CalendarScreen() {
             <PhotoCard
               item={item}
               onPress={() => router.push({ pathname: '/photo_detail', params: { uri: item.uri, latitude: item.latitude, longitude: item.longitude, takenAt: item.takenAt } })}
+              onEdit={(photo) => {
+                setEditingPhoto(photo);
+                setShowEditModal(true);
+              }}
+              onDelete={(photo) => {
+                Alert.alert(
+                  'Supprimer',
+                  'Voulez-vous vraiment supprimer cette photo ?',
+                  [
+                    { text: 'Annuler', style: 'cancel' },
+                    {
+                      text: 'Supprimer',
+                      style: 'destructive',
+                      onPress: () => {
+                        photoDatabase.deletePhoto(photo.id);
+                        setMarks(photoDatabase.getMarkedDates());
+                        setPhotos(photoDatabase.getPhotosByDate(selected));
+                      }
+                    }
+                  ]
+                );
+              }}
             />
           )}
           ListEmptyComponent={
@@ -66,6 +91,21 @@ export default function CalendarScreen() {
           contentContainerStyle={{ paddingBottom: 30 }}
         />
       </View>
+
+      {editingPhoto && (
+        <EditPhotoModal
+          visible={showEditModal}
+          photo={editingPhoto}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditingPhoto(null);
+          }}
+          onSave={() => {
+            setMarks(photoDatabase.getMarkedDates());
+            setPhotos(photoDatabase.getPhotosByDate(selected));
+          }}
+        />
+      )}
     </SafeAreaView>
   );
 }

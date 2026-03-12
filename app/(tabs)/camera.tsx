@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { launchImageLibraryAsync } from 'expo-image-picker';
 import { useEffect, useState } from 'react';
-import { Alert, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -14,6 +14,8 @@ export default function CameraScreen() {
   const [capturedPhoto, setCapturedPhoto] = useState<Photo | null>(null);
   const [cameraRef, setCameraRef] = useState<any>(null);
   const [facing, setFacing] = useState<'back' | 'front'>('back');
+  const [photoName, setPhotoName] = useState('');
+  const [photoDescription, setPhotoDescription] = useState('');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -89,10 +91,14 @@ export default function CameraScreen() {
         capturedPhoto.uri,
         capturedPhoto.latitude,
         capturedPhoto.longitude,
-        dateOnly
+        dateOnly,
+        photoName,
+        photoDescription
       );
       Alert.alert('Succès', 'Photo sauvegardée');
       setCapturedPhoto(null);
+      setPhotoName('');
+      setPhotoDescription('');
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de sauvegarder la photo: ' + error);
     }
@@ -175,6 +181,25 @@ export default function CameraScreen() {
             <Text style={styles.dateText}>
               {new Date(capturedPhoto.takenAt).toLocaleString('fr-FR')}
             </Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Nom de la photo"
+              value={photoName}
+              onChangeText={setPhotoName}
+              placeholderTextColor="#8E8E93"
+            />
+
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Description"
+              value={photoDescription}
+              onChangeText={setPhotoDescription}
+              placeholderTextColor="#8E8E93"
+              multiline
+              numberOfLines={3}
+            />
+
             <TouchableOpacity style={styles.saveButton} onPress={savePhotoToDatabase}>
               <Ionicons name="save" size={24} color="#fff" />
               <Text style={styles.saveButtonText}>Sauvegarder dans SQLite</Text>
@@ -313,5 +338,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  input: {
+    width: 300,
+    height: 45,
+    backgroundColor: '#F2F2F7',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    marginTop: 10,
+  },
+  textArea: {
+    height: 80,
+    textAlignVertical: 'top',
+    paddingTop: 12,
   },
 });

@@ -9,6 +9,8 @@ export const setupDatabase = () => {
       CREATE TABLE IF NOT EXISTS photos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         uri TEXT NOT NULL,
+        name TEXT,
+        description TEXT,
         latitude REAL,
         longitude REAL,
         takenAt TEXT NOT NULL
@@ -33,10 +35,10 @@ export const setupDatabase = () => {
 };
 
 export const photoDatabase = {
-  addPhoto: (uri: string, lat: number, lon: number, date: string) => {
+  addPhoto: (uri: string, lat: number, lon: number, date: string, name?: string, description?: string) => {
     return db?.runSync(
-      'INSERT INTO photos (uri, latitude, longitude, takenAt) VALUES (?, ?, ?, ?)',
-      [uri, lat, lon, date]
+      'INSERT INTO photos (uri, latitude, longitude, takenAt, name, description) VALUES (?, ?, ?, ?, ?, ?)',
+      [uri, lat, lon, date, name || '', description || '']
     );
   },
   getMarkedDates: () => {
@@ -61,6 +63,15 @@ export const photoDatabase = {
   getAllPhotos: () => {
     if (!db) return [];
     return db.getAllSync<any>('SELECT * FROM photos');
+  },
+  updatePhoto: (id: number, name: string, description: string) => {
+    return db?.runSync(
+      'UPDATE photos SET name = ?, description = ? WHERE id = ?',
+      [name, description, id]
+    );
+  },
+  deletePhoto: (id: number) => {
+    return db?.runSync('DELETE FROM photos WHERE id = ?', [id]);
   },
 };
 
