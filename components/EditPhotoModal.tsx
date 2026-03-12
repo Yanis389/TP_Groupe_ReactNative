@@ -1,14 +1,9 @@
+import { EditPhotoModalProps } from '@/services/types';
 import React, { useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { photoDatabase } from '@/services/database';
 
-interface EditPhotoModalProps {
-  visible: boolean;
-  photo: any;
-  onClose: () => void;
-  onSave: () => void;
-}
 
 export const EditPhotoModal = ({ visible, photo, onClose, onSave }: EditPhotoModalProps) => {
   const [name, setName] = useState(photo?.name || '');
@@ -16,7 +11,7 @@ export const EditPhotoModal = ({ visible, photo, onClose, onSave }: EditPhotoMod
 
   const handleSave = () => {
     if (!photo) return;
-    
+
     try {
       photoDatabase.updatePhoto(photo.id, name, description);
       Alert.alert('Succès', 'Photo modifiée');

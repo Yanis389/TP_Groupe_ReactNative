@@ -1,3 +1,4 @@
+import { CustomCalendarProps } from '@/services/types';
 import React from 'react';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
@@ -8,11 +9,6 @@ LocaleConfig.locales['fr'] = {
   today: "Aujourd'hui"
 };
 LocaleConfig.defaultLocale = 'fr';
-
-interface CustomCalendarProps {
-  markedDates: Record<string, any>;
-  onDayPress: (day: any) => void;
-}
 
 export const CustomCalendar = ({ markedDates, onDayPress }: CustomCalendarProps) => (
   <Calendar

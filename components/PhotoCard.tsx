@@ -1,15 +1,9 @@
+import { PhotoCardProps } from '@/services/types';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-interface Props {
-  item: any;
-  onPress: (photo: any) => void;
-  onEdit?: (photo: any) => void;
-  onDelete?: (photo: any) => void;
-}
-
-export const PhotoCard = ({ item, onPress, onEdit, onDelete }: Props) => {
+export const PhotoCard = ({ item, onPress, onEdit, onDelete }: PhotoCardProps) => {
   const lat = Number(item.latitude) || 0;
   const lon = Number(item.longitude) || 0;
 
