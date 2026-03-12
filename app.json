@@ -44,12 +44,6 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
-      ],
-      [
-        "react-native-maps",
-        {
-          "androidGoogleMapsApiKey": "$(API_KEY_GOOGLE)"
-        }
       ]
     ],
     "experiments": {
