@@ -57,7 +57,7 @@ export default function CalendarScreen() {
           renderItem={({ item }) => (
             <PhotoCard
               item={item}
-              onPress={() => router.push({ pathname: '/photo_detail', params: { uri: item.uri, latitude: item.latitude, longitude: item.longitude, takenAt: item.takenAt } })}
+              onPress={() => router.push({ pathname: '/photo_detail', params: { id: item.id } })}
               onEdit={(photo) => {
                 setEditingPhoto(photo);
                 setShowEditModal(true);

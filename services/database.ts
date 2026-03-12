@@ -41,6 +41,11 @@ export const photoDatabase = {
       [uri, lat, lon, date, name || '', description || '']
     );
   },
+  getPhotoById: (id: number) => {
+    if (!db) return null;
+    const rows = db.getAllSync<any>('SELECT * FROM photos WHERE id = ?', [id]);
+    return rows[0] ?? null;
+  },
   getMarkedDates: () => {
     if (!db) return {};
     const rows = db.getAllSync<{ takenAt: string }>('SELECT DISTINCT takenAt FROM photos');

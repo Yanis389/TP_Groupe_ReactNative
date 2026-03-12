@@ -120,7 +120,7 @@ export default function Map({ markers = [], initialRegion }: MapScreenProps) {
               longitude: Number(marker.longitude),
             }}
             onPress={() =>
-              router.push({ pathname: '/photo_detail', params: { uri: marker.uri, longitude:marker.longitude, latitude:marker.latitude, takenAt:marker.takenAt } })
+              router.push({ pathname: '/photo_detail', params: { id: marker.id } })
             }
           />
         ))}
