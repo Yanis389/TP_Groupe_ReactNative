@@ -29,25 +29,23 @@ export default function CalendarScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      
       <View style={styles.header}>
         <Text style={styles.title}>Explorateur Temporel</Text>
       </View>
 
       <View style={styles.calendarCard}>
-        <CustomCalendar 
-           onDayPress={(day) => setSelected(day.dateString)} 
-           markedDates={calendarMarks} 
+        <CustomCalendar
+          onDayPress={(day) => setSelected(day.dateString)}
+          markedDates={calendarMarks}
         />
       </View>
 
       <View style={styles.listContainer}>
         <View style={styles.sectionHeader}>
-           <Text style={styles.sectionTitle}>
-             {photos.length > 0 ? `📸 ${photos.length} souvenirs` : "Aucun souvenir"}
-           </Text>
-           <Text style={styles.dateSubtitle}>{selected}</Text>
+          <Text style={styles.sectionTitle}>
+            {photos.length > 0 ? `📸 ${photos.length} souvenirs` : "Aucun souvenir"}
+          </Text>
+          <Text style={styles.dateSubtitle}>{selected}</Text>
         </View>
 
         <FlatList
